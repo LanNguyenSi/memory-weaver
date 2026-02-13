@@ -43,8 +43,26 @@ export class MemoryEngine extends Memory {
       ...config
     };
     
+    // Performance optimization: Initialize with batch processing capabilities
     this.fragmentProcessor = new MemoryFragmentProcessor();
     this.contextLoader = new ContextLoader(this.config.workspaceDir);
+    
+    // Pre-warm caches for better performance
+    this.initializePerformanceOptimizations();
+  }
+
+  /**
+   * Initialize performance optimizations
+   * Target: ~500 fragments/sec processing speed like Python implementation
+   */
+  private async initializePerformanceOptimizations(): Promise<void> {
+    // Pre-allocate memory pools to reduce GC pressure
+    // Warm up fragment processing pipeline
+    try {
+      await this.fragmentProcessor.initializeBatchProcessing();
+    } catch (error) {
+      console.warn('Performance optimization init failed:', error);
+    }
   }
 
   /**
