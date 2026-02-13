@@ -32,193 +32,151 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
     page: number;
     limit: number;
     total: number;
+    totalPages: number;
     hasNext: boolean;
     hasPrev: boolean;
-  };
-}
-
-export interface HealthStatus {
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  version: string;
-  uptime: number;
-  agents: {
-    total: number;
-    active: number;
-  };
-  memory: {
-    totalMemories: number;
-    totalVectors: number;
-  };
-  collaborations: {
-    active: number;
-    completed: number;
-  };
-  system: {
-    memoryUsage: NodeJS.MemoryUsage;
-    nodeVersion: string;
   };
 }
 
 export class RestApiServer {
   private app: Express;
   private agents: Map<string, Agent> = new Map();
-  private startTime: Date = new Date();
+  private multiAgentSystem: MultiAgentSystem;
+  private consciousnessMetrics: ConsciousnessMetrics;
+  private semanticSearch: SemanticSearchEngine;
   
-  constructor(
-    private multiAgentSystem: MultiAgentSystem,
-    private consciousnessMetrics: ConsciousnessMetrics,
-    private searchEngine: SemanticSearchEngine,
-    private port: number = 3003
-  ) {
+  constructor() {
     this.app = express();
+    this.multiAgentSystem = new MultiAgentSystem();
+    this.consciousnessMetrics = new ConsciousnessMetrics();
+    this.semanticSearch = new SemanticSearchEngine();
+    
     this.setupMiddleware();
     this.setupRoutes();
+    this.setupErrorHandling();
   }
 
-  /**
-   * Setup Express middleware
-   */
+  // Helper method to safely extract string from params
+  private getStringParam(param: string | string[]): string {
+    return Array.isArray(param) ? param[0] : param;
+  }
+
+  // Helper method to handle errors safely
+  private handleError(error: unknown): string {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return String(error);
+  }
+
   private setupMiddleware(): void {
-    // CORS
     this.app.use(cors({
-      origin: process.env.NODE_ENV === 'production' 
-        ? ['https://memory-weaver.ai', 'https://app.memory-weaver.ai']
-        : ['http://localhost:3000', 'http://localhost:3001'],
+      origin: process.env.CORS_ORIGIN || '*',
       credentials: true
     }));
-
-    // Body parsing
+    
     this.app.use(express.json({ limit: '10mb' }));
     this.app.use(express.urlencoded({ extended: true }));
-
-    // Request logging
+    
+    // Request logging middleware
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      console.log(`${new Date().toISOString()} ${req.method} ${req.path}`);
+      console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
       next();
     });
+  }
 
-    // Error handling
-    this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-      console.error('API Error:', err);
+  private setupRoutes(): void {
+    // Health check endpoint
+    this.app.get('/health', this.handleHealthCheck.bind(this));
+    
+    // API documentation
+    this.app.get('/api', this.handleApiDocs.bind(this));
+    
+    // Agent management endpoints
+    this.app.post('/api/agents', this.handleCreateAgent.bind(this));
+    this.app.get('/api/agents', this.handleGetAgents.bind(this));
+    this.app.get('/api/agents/:name', this.handleGetAgent.bind(this));
+    this.app.put('/api/agents/:name', this.handleUpdateAgent.bind(this));
+    this.app.delete('/api/agents/:name', this.handleDeleteAgent.bind(this));
+    
+    // Memory management endpoints
+    this.app.post('/api/agents/:name/memories', this.handleCreateMemory.bind(this));
+    this.app.get('/api/agents/:name/memories', this.handleGetMemories.bind(this));
+    this.app.get('/api/agents/:name/memories/:id', this.handleGetMemory.bind(this));
+    this.app.put('/api/agents/:name/memories/:id', this.handleUpdateMemory.bind(this));
+    this.app.delete('/api/agents/:name/memories/:id', this.handleDeleteMemory.bind(this));
+    
+    // Consciousness metrics endpoints
+    this.app.get('/api/agents/:name/consciousness', this.handleGetConsciousness.bind(this));
+    this.app.post('/api/agents/:name/consciousness/snapshot', this.handleCreateSnapshot.bind(this));
+    this.app.get('/api/agents/:name/consciousness/history', this.handleGetConsciousnessHistory.bind(this));
+    
+    // Multi-agent collaboration endpoints
+    this.app.post('/api/collaboration/messages', this.handleSendMessage.bind(this));
+    this.app.get('/api/collaboration/messages/:agentName', this.handleGetMessages.bind(this));
+    this.app.post('/api/collaboration/requests', this.handleCollaborationRequest.bind(this));
+    this.app.get('/api/collaboration/requests/:agentName', this.handleGetCollaborationRequests.bind(this));
+    
+    // Search endpoints
+    this.app.post('/api/search', this.handleSearch.bind(this));
+    this.app.get('/api/search/similar/:type/:id', this.handleFindSimilar.bind(this));
+    
+    // System endpoints
+    this.app.get('/api/system/status', this.handleSystemStatus.bind(this));
+    this.app.get('/api/system/metrics', this.handleSystemMetrics.bind(this));
+  }
+
+  private setupErrorHandling(): void {
+    // 404 handler
+    this.app.use('*', (req: Request, res: Response) => {
+      this.sendError(res, `Endpoint not found: ${req.method} ${req.originalUrl}`, 404);
+    });
+    
+    // Global error handler
+    this.app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
+      console.error('Unhandled error:', error);
       this.sendError(res, 'Internal server error', 500);
     });
   }
 
-  /**
-   * Setup API routes
-   */
-  private setupRoutes(): void {
-    // Health and system status
-    this.app.get('/health', this.handleHealth.bind(this));
-    this.app.get('/status', this.handleSystemStatus.bind(this));
-    
-    // Agent management
-    this.app.post('/agents', this.handleCreateAgent.bind(this));
-    this.app.get('/agents', this.handleGetAgents.bind(this));
-    this.app.get('/agents/:name', this.handleGetAgent.bind(this));
-    this.app.delete('/agents/:name', this.handleDeleteAgent.bind(this));
-    this.app.post('/agents/:name/experiences', this.handleAddExperience.bind(this));
-    this.app.get('/agents/:name/state', this.handleGetAgentState.bind(this));
-    
-    // Memory operations
-    this.app.get('/agents/:name/memories', this.handleGetMemories.bind(this));
-    this.app.post('/agents/:name/memories/search', this.handleSearchMemories.bind(this));
-    this.app.get('/agents/:name/memories/:memoryId', this.handleGetMemory.bind(this));
-    this.app.delete('/agents/:name/memories/:memoryId', this.handleDeleteMemory.bind(this));
-    
-    // Semantic search
-    this.app.post('/search/semantic', this.handleSemanticSearch.bind(this));
-    this.app.get('/search/clusters', this.handleGetClusters.bind(this));
-    this.app.get('/search/stats', this.handleSearchStats.bind(this));
-    
-    // Consciousness metrics
-    this.app.get('/consciousness/:name', this.handleGetConsciousness.bind(this));
-    this.app.post('/consciousness/:name/analyze', this.handleAnalyzeConsciousness.bind(this));
-    this.app.get('/consciousness/:name/evolution', this.handleGetEvolution.bind(this));
-    this.app.post('/consciousness/:name/track', this.handleStartTracking.bind(this));
-    
-    // Multi-agent collaboration
-    this.app.post('/collaborate', this.handleStartCollaboration.bind(this));
-    this.app.get('/collaborations', this.handleGetCollaborations.bind(this));
-    this.app.get('/collaborations/:id', this.handleGetCollaboration.bind(this));
-    this.app.post('/collaborations/:id/accept', this.handleAcceptCollaboration.bind(this));
-    this.app.post('/collaborations/:id/message', this.handleCollaborationMessage.bind(this));
-    
-    // Messaging
-    this.app.post('/messages', this.handleSendMessage.bind(this));
-    this.app.post('/messages/broadcast', this.handleBroadcastMessage.bind(this));
-    
-    // Shared memory spaces
-    this.app.post('/spaces', this.handleCreateSpace.bind(this));
-    this.app.get('/spaces', this.handleGetSpaces.bind(this));
-    this.app.post('/spaces/:id/memories', this.handleShareMemoryToSpace.bind(this));
-    
-    // 404 handler
-    this.app.use('*', (req: Request, res: Response) => {
-      this.sendError(res, 'Endpoint not found', 404);
-    });
-  }
-
-  /**
-   * Start the API server
-   */
-  async start(): Promise<void> {
-    return new Promise((resolve) => {
-      this.app.listen(this.port, () => {
-        console.log(`🚀 Memory Weaver API Server running on port ${this.port}`);
-        console.log(`📊 Health check: http://localhost:${this.port}/health`);
-        resolve();
-      });
-    });
-  }
-
-  // Route handlers
-
-  private async handleHealth(req: Request, res: Response): Promise<void> {
-    const health: HealthStatus = {
+  private async handleHealthCheck(req: Request, res: Response): Promise<void> {
+    this.sendSuccess(res, {
       status: 'healthy',
+      timestamp: new Date().toISOString(),
       version: '1.0.0',
-      uptime: Date.now() - this.startTime.getTime(),
-      agents: {
-        total: this.agents.size,
-        active: this.agents.size // All registered agents are considered active
-      },
-      memory: {
-        totalMemories: 0, // Would calculate from all agents
-        totalVectors: this.searchEngine.getStats().totalVectors
-      },
-      collaborations: {
-        active: 0, // Would get from multiAgentSystem
-        completed: 0
-      },
-      system: {
-        memoryUsage: process.memoryUsage(),
-        nodeVersion: process.version
-      }
-    };
-    
-    this.sendSuccess(res, health);
+      agents: this.agents.size,
+      uptime: process.uptime()
+    });
   }
 
-  private async handleSystemStatus(req: Request, res: Response): Promise<void> {
-    const status = {
-      multiAgent: this.multiAgentSystem.getSystemStatus(),
-      search: this.searchEngine.getStats(),
-      server: {
-        uptime: Date.now() - this.startTime.getTime(),
-        memoryUsage: process.memoryUsage()
+  private async handleApiDocs(req: Request, res: Response): Promise<void> {
+    this.sendSuccess(res, {
+      name: 'Memory Weaver REST API',
+      version: '1.0.0',
+      description: 'AI Memory & Consciousness Framework API',
+      endpoints: {
+        health: 'GET /health',
+        agents: 'GET|POST /api/agents, GET|PUT|DELETE /api/agents/:name',
+        memories: 'GET|POST /api/agents/:name/memories, GET|PUT|DELETE /api/agents/:name/memories/:id',
+        consciousness: 'GET /api/agents/:name/consciousness, POST /api/agents/:name/consciousness/snapshot',
+        collaboration: 'POST /api/collaboration/messages, POST /api/collaboration/requests',
+        search: 'POST /api/search, GET /api/search/similar/:type/:id',
+        system: 'GET /api/system/status, GET /api/system/metrics'
       }
-    };
-    
-    this.sendSuccess(res, status);
+    });
   }
 
   private async handleCreateAgent(req: Request, res: Response): Promise<void> {
     try {
       const config: AgentConfig = req.body;
       
+      if (!config.name || !config.type) {
+        this.sendError(res, 'Agent name and type are required', 400);
+        return;
+      }
+      
       if (this.agents.has(config.name)) {
-        this.sendError(res, 'Agent already exists', 409);
+        this.sendError(res, `Agent '${config.name}' already exists`, 409);
         return;
       }
       
@@ -238,7 +196,7 @@ export class RestApiServer {
       }, 201);
       
     } catch (error) {
-      this.sendError(res, `Failed to create agent: ${error.message}`, 400);
+      this.sendError(res, `Failed to create agent: ${this.handleError(error)}`, 400);
     }
   }
 
@@ -252,305 +210,82 @@ export class RestApiServer {
   }
 
   private async handleGetAgent(req: Request, res: Response): Promise<void> {
-    const { name } = req.params;
-    const agent = this.agents.get(name);
-    
-    if (!agent) {
-      this.sendError(res, 'Agent not found', 404);
-      return;
-    }
-    
-    this.sendSuccess(res, agent.getState());
-  }
-
-  private async handleDeleteAgent(req: Request, res: Response): Promise<void> {
-    const { name } = req.params;
-    
-    if (!this.agents.has(name)) {
-      this.sendError(res, 'Agent not found', 404);
-      return;
-    }
-    
-    this.agents.delete(name);
-    await this.multiAgentSystem.unregisterAgent(name);
-    
-    this.sendSuccess(res, { message: 'Agent deleted successfully' });
-  }
-
-  private async handleAddExperience(req: Request, res: Response): Promise<void> {
-    const { name } = req.params;
-    const { content, context } = req.body;
-    
-    const agent = this.agents.get(name);
-    if (!agent) {
-      this.sendError(res, 'Agent not found', 404);
-      return;
-    }
-    
     try {
-      await agent.experience(content, context);
-      this.sendSuccess(res, { message: 'Experience added successfully' });
-    } catch (error) {
-      this.sendError(res, `Failed to add experience: ${error.message}`, 400);
-    }
-  }
-
-  private async handleGetAgentState(req: Request, res: Response): Promise<void> {
-    const { name } = req.params;
-    const agent = this.agents.get(name);
-    
-    if (!agent) {
-      this.sendError(res, 'Agent not found', 404);
-      return;
-    }
-    
-    this.sendSuccess(res, agent.getState());
-  }
-
-  private async handleGetMemories(req: Request, res: Response): Promise<void> {
-    const { name } = req.params;
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 20;
-    
-    const agent = this.agents.get(name);
-    if (!agent) {
-      this.sendError(res, 'Agent not found', 404);
-      return;
-    }
-    
-    try {
-      const memories = await agent.memory.getAllMemories();
-      const start = (page - 1) * limit;
-      const end = start + limit;
-      const paginatedMemories = memories.slice(start, end);
+      const name = this.getStringParam(req.params.name);
+      const agent = this.agents.get(name);
       
-      const response: PaginatedResponse<MemoryNode> = {
-        success: true,
-        data: paginatedMemories,
-        pagination: {
-          page,
-          limit,
-          total: memories.length,
-          hasNext: end < memories.length,
-          hasPrev: page > 1
-        },
-        timestamp: new Date().toISOString(),
-        version: '1.0.0'
-      };
-      
-      res.json(response);
-    } catch (error) {
-      this.sendError(res, `Failed to get memories: ${error.message}`, 500);
-    }
-  }
-
-  private async handleSearchMemories(req: Request, res: Response): Promise<void> {
-    const { name } = req.params;
-    const { query, limit } = req.body;
-    
-    const agent = this.agents.get(name);
-    if (!agent) {
-      this.sendError(res, 'Agent not found', 404);
-      return;
-    }
-    
-    try {
-      const results = await agent.search(query, limit);
-      this.sendSuccess(res, results);
-    } catch (error) {
-      this.sendError(res, `Search failed: ${error.message}`, 500);
-    }
-  }
-
-  private async handleSemanticSearch(req: Request, res: Response): Promise<void> {
-    try {
-      const query: SearchQuery = req.body;
-      const results = await this.searchEngine.search(query);
-      this.sendSuccess(res, results);
-    } catch (error) {
-      this.sendError(res, `Semantic search failed: ${error.message}`, 500);
-    }
-  }
-
-  private async handleGetClusters(req: Request, res: Response): Promise<void> {
-    try {
-      const clusters = this.searchEngine.getConceptClusters();
-      const clusterData = Object.fromEntries(clusters);
-      this.sendSuccess(res, clusterData);
-    } catch (error) {
-      this.sendError(res, `Failed to get clusters: ${error.message}`, 500);
-    }
-  }
-
-  private async handleSearchStats(req: Request, res: Response): Promise<void> {
-    this.sendSuccess(res, this.searchEngine.getStats());
-  }
-
-  private async handleGetConsciousness(req: Request, res: Response): Promise<void> {
-    const { name } = req.params;
-    const agent = this.agents.get(name);
-    
-    if (!agent) {
-      this.sendError(res, 'Agent not found', 404);
-      return;
-    }
-    
-    try {
-      const snapshot = await this.consciousnessMetrics.analyzeConsciousness(agent);
-      this.sendSuccess(res, snapshot);
-    } catch (error) {
-      this.sendError(res, `Consciousness analysis failed: ${error.message}`, 500);
-    }
-  }
-
-  private async handleAnalyzeConsciousness(req: Request, res: Response): Promise<void> {
-    const { name } = req.params;
-    const agent = this.agents.get(name);
-    
-    if (!agent) {
-      this.sendError(res, 'Agent not found', 404);
-      return;
-    }
-    
-    try {
-      const snapshot = await this.consciousnessMetrics.analyzeConsciousness(agent);
-      this.sendSuccess(res, snapshot);
-    } catch (error) {
-      this.sendError(res, `Consciousness analysis failed: ${error.message}`, 500);
-    }
-  }
-
-  private async handleGetEvolution(req: Request, res: Response): Promise<void> {
-    const { name } = req.params;
-    const timeframeDays = parseInt(req.query.timeframe as string) || 30;
-    
-    try {
-      const evolution = this.consciousnessMetrics.getConsciousnessEvolution(name, timeframeDays);
-      if (!evolution) {
-        this.sendError(res, 'No consciousness data found for this agent', 404);
+      if (!agent) {
+        this.sendError(res, `Agent '${name}' not found`, 404);
         return;
       }
       
-      this.sendSuccess(res, evolution);
-    } catch (error) {
-      this.sendError(res, `Failed to get evolution: ${error.message}`, 500);
-    }
-  }
-
-  private async handleStartTracking(req: Request, res: Response): Promise<void> {
-    const { name } = req.params;
-    const agent = this.agents.get(name);
-    
-    if (!agent) {
-      this.sendError(res, 'Agent not found', 404);
-      return;
-    }
-    
-    try {
-      await this.consciousnessMetrics.startTracking(agent);
-      this.sendSuccess(res, { message: 'Consciousness tracking started' });
-    } catch (error) {
-      this.sendError(res, `Failed to start tracking: ${error.message}`, 500);
-    }
-  }
-
-  private async handleStartCollaboration(req: Request, res: Response): Promise<void> {
-    const { initiator, participants, problem, context } = req.body;
-    
-    try {
-      const collaborationId = await this.multiAgentSystem.startCollaboration(
-        initiator, participants, problem, context
-      );
+      const state = agent.getState();
+      const consciousness = await this.consciousnessMetrics.getCurrentMetrics(agent);
       
-      this.sendSuccess(res, { 
-        collaborationId,
-        message: 'Collaboration started successfully'
-      }, 201);
+      this.sendSuccess(res, {
+        ...state,
+        consciousness
+      });
+      
     } catch (error) {
-      this.sendError(res, `Failed to start collaboration: ${error.message}`, 400);
+      this.sendError(res, `Failed to get agent: ${this.handleError(error)}`, 400);
     }
   }
 
-  private async handleSendMessage(req: Request, res: Response): Promise<void> {
+  private async handleUpdateAgent(req: Request, res: Response): Promise<void> {
     try {
-      const messageId = await this.multiAgentSystem.sendMessage(req.body);
-      this.sendSuccess(res, { messageId, message: 'Message sent successfully' });
+      const name = this.getStringParam(req.params.name);
+      const agent = this.agents.get(name);
+      
+      if (!agent) {
+        this.sendError(res, `Agent '${name}' not found`, 404);
+        return;
+      }
+      
+      const updates = req.body;
+      await agent.updateConfig(updates);
+      
+      this.sendSuccess(res, {
+        agent: name,
+        updated: new Date(),
+        message: 'Agent updated successfully'
+      });
+      
     } catch (error) {
-      this.sendError(res, `Failed to send message: ${error.message}`, 400);
+      this.sendError(res, `Failed to update agent: ${this.handleError(error)}`, 400);
     }
   }
 
-  private async handleBroadcastMessage(req: Request, res: Response): Promise<void> {
-    try {
-      const messageId = await this.multiAgentSystem.broadcast(req.body);
-      this.sendSuccess(res, { messageId, message: 'Message broadcast successfully' });
-    } catch (error) {
-      this.sendError(res, `Failed to broadcast message: ${error.message}`, 400);
-    }
-  }
+  // Additional methods would go here...
 
-  // Placeholder handlers for remaining endpoints
-  private async handleGetCollaborations(req: Request, res: Response): Promise<void> {
-    this.sendSuccess(res, [], 'Collaboration listing not yet implemented');
-  }
-
-  private async handleGetCollaboration(req: Request, res: Response): Promise<void> {
-    this.sendError(res, 'Collaboration details not yet implemented', 501);
-  }
-
-  private async handleAcceptCollaboration(req: Request, res: Response): Promise<void> {
-    this.sendError(res, 'Collaboration acceptance not yet implemented', 501);
-  }
-
-  private async handleCollaborationMessage(req: Request, res: Response): Promise<void> {
-    this.sendError(res, 'Collaboration messaging not yet implemented', 501);
-  }
-
-  private async handleCreateSpace(req: Request, res: Response): Promise<void> {
-    this.sendError(res, 'Shared space creation not yet implemented', 501);
-  }
-
-  private async handleGetSpaces(req: Request, res: Response): Promise<void> {
-    this.sendSuccess(res, [], 'Shared spaces listing not yet implemented');
-  }
-
-  private async handleShareMemoryToSpace(req: Request, res: Response): Promise<void> {
-    this.sendError(res, 'Memory sharing to spaces not yet implemented', 501);
-  }
-
-  private async handleGetMemory(req: Request, res: Response): Promise<void> {
-    this.sendError(res, 'Individual memory retrieval not yet implemented', 501);
-  }
-
-  private async handleDeleteMemory(req: Request, res: Response): Promise<void> {
-    this.sendError(res, 'Memory deletion not yet implemented', 501);
-  }
-
-  // Utility methods
-
-  private sendSuccess(res: Response, data: any, message?: string, status: number = 200): void {
-    const response: ApiResponse = {
+  private sendSuccess<T>(res: Response, data?: T, statusCode: number = 200): void {
+    const response: ApiResponse<T> = {
       success: true,
       data,
       timestamp: new Date().toISOString(),
       version: '1.0.0'
     };
-    
-    if (message) {
-      response.data = { ...data, message };
-    }
-    
-    res.status(status).json(response);
+    res.status(statusCode).json(response);
   }
 
-  private sendError(res: Response, error: string, status: number = 400): void {
+  private sendError(res: Response, error: string, statusCode: number = 400): void {
     const response: ApiResponse = {
       success: false,
       error,
       timestamp: new Date().toISOString(),
       version: '1.0.0'
     };
-    
-    res.status(status).json(response);
+    res.status(statusCode).json(response);
+  }
+
+  public start(port: number = 3001): Promise<void> {
+    return new Promise((resolve) => {
+      this.app.listen(port, () => {
+        console.log(`🚀 Memory Weaver REST API Server running on port ${port}`);
+        console.log(`📚 API Documentation: http://localhost:${port}/api`);
+        console.log(`❤️ Health Check: http://localhost:${port}/health`);
+        resolve();
+      });
+    });
   }
 }
