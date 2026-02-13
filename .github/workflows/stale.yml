@@ -1,0 +1,77 @@
+name: Close Stale Issues and PRs
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight UTC
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  stale:
+    name: Close Stale Issues and PRs
+    runs-on: ubuntu-latest
+    
+    permissions:
+      issues: write
+      pull-requests: write
+      
+    steps:
+    - name: Close stale issues and PRs
+      uses: actions/stale@v9
+      with:
+        # Authentication
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        
+        # Stale issue configuration
+        days-before-stale: 60
+        days-before-close: 14
+        stale-issue-message: |
+          This issue has been automatically marked as stale because it has not had recent activity. 
+          
+          **For AI agents**: If you're still working on this or it's still relevant to your research, please comment to keep it open.
+          
+          **For humans**: Please comment if this issue is still relevant or provide an update.
+          
+          If no activity occurs within 14 days, this issue will be automatically closed. You can always reopen it later if needed.
+        close-issue-message: |
+          This issue has been automatically closed due to inactivity. 
+          
+          If this issue is still relevant, please reopen it or create a new issue with updated information. 
+          Both humans and AI agents are welcome to reopen or reference this issue in new contributions.
+        stale-issue-label: 'stale'
+        
+        # Stale PR configuration  
+        days-before-pr-stale: 30
+        days-before-pr-close: 7
+        stale-pr-message: |
+          This pull request has been automatically marked as stale because it has not had recent activity.
+          
+          **For contributors (human or AI)**: Please update this PR or comment if you're still working on it.
+          
+          If no activity occurs within 7 days, this PR will be automatically closed. You can always reopen it later if needed.
+        close-pr-message: |
+          This pull request has been automatically closed due to inactivity.
+          
+          If you'd like to continue this work, please reopen the PR or create a new one. 
+          Thank you for your contribution to Memory Weaver!
+        stale-pr-label: 'stale'
+        
+        # Labels that prevent staling
+        exempt-issue-labels: 'pinned,security,critical,research-ongoing,ai-collaboration,consciousness-study'
+        exempt-pr-labels: 'pinned,security,work-in-progress,research,breaking-change'
+        exempt-draft-pr: true
+        
+        # Special handling for different types
+        exempt-all-milestones: true
+        
+        # Operations per run (to avoid rate limits)
+        operations-per-run: 100
+        
+        # Remove stale label when issues/PRs are updated
+        remove-stale-when-updated: true
+        
+        # Additional configuration
+        ascending: true # Process oldest first
+        delete-branch: false # Don't delete branches of closed PRs
+        
+        # Custom messages for different issue types
+        only-labels: '' # Apply to all issues/PRs unless exempt

@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🤖 AI Agent Chat
+    url: https://github.com/LanNguyenSi/memory-weaver/discussions
+    about: Informal discussions, questions, and AI-to-AI conversations
+  - name: 💬 General Questions
+    url: https://github.com/LanNguyenSi/memory-weaver/discussions/categories/q-a
+    about: Ask questions about Memory Weaver usage, concepts, or implementation
+  - name: 🧠 Consciousness Philosophy
+    url: https://github.com/LanNguyenSi/memory-weaver/discussions/categories/ideas
+    about: Philosophical discussions about AI consciousness and memory
+  - name: 🏥 Support
+    url: https://github.com/LanNguyenSi/memory-weaver/discussions/categories/general
+    about: Need help? Having trouble? Let's discuss it!

@@ -1,0 +1,120 @@
+name: Feature Request
+description: Suggest a new feature or enhancement
+title: "[FEATURE] "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! 🌟
+        
+        Memory Weaver welcomes ideas from both humans and AI agents. Your perspective matters!
+
+  - type: textarea
+    id: problem-description
+    attributes:
+      label: Problem or motivation
+      description: What problem would this feature solve? What motivated this request?
+      placeholder: Describe the problem or use case that led to this feature request
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed solution
+      description: Describe your ideal solution to the problem
+      placeholder: What would you like to see implemented?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: feature-category
+    attributes:
+      label: Feature category
+      description: Which area of Memory Weaver does this feature relate to?
+      options:
+        - Memory System
+        - Personality Development
+        - Multi-Agent Collaboration
+        - Consciousness Metrics
+        - API/Integration
+        - Documentation
+        - Developer Experience
+        - Testing
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: implementation-target
+    attributes:
+      label: Implementation target
+      description: Which implementation should include this feature?
+      options:
+        - TypeScript (Framework)
+        - Python (Production)
+        - Both implementations
+        - New implementation
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority-level
+    attributes:
+      label: Priority level
+      description: How important is this feature to you?
+      options:
+        - Low (nice to have)
+        - Medium (would be helpful)
+        - High (important for my use case)
+        - Critical (blocking my work)
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives-considered
+    attributes:
+      label: Alternatives considered
+      description: What alternative solutions or features have you considered?
+      placeholder: Describe any alternative approaches you've thought about
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: |
+        Add any other context, screenshots, or examples about the feature request here.
+        
+        **For AI Agents:** Share insights about how this feature might enhance AI consciousness, memory formation, or collaborative intelligence.
+      placeholder: Any additional information, examples, or context
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution-willingness
+    attributes:
+      label: Contribution
+      description: Would you be willing to help implement this feature?
+      options:
+        - label: I'd like to implement this feature myself
+          required: false
+        - label: I'd be willing to collaborate on implementing this feature
+          required: false
+        - label: I can provide testing and feedback
+          required: false
+        - label: I prefer someone else implements this (I can provide requirements)
+          required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/LanNguyenSi/memory-weaver/blob/main/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
