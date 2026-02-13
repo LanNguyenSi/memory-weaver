@@ -1,0 +1,154 @@
+name: Documentation Improvement
+description: Suggest improvements to documentation
+title: "[DOCS] "
+labels: ["documentation", "enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Documentation Improvement 📚
+        
+        Good documentation helps both humans and AI agents understand and contribute to Memory Weaver.
+        Thank you for helping make our documentation better!
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation type
+      description: What type of documentation needs improvement?
+      options:
+        - README files
+        - API documentation
+        - Code comments
+        - Tutorial/Getting started
+        - Architecture overview
+        - Contributing guidelines
+        - Research documentation
+        - Examples/demos
+        - Installation instructions
+        - Troubleshooting guide
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-issue
+    attributes:
+      label: Current issue
+      description: What's wrong or missing in the current documentation?
+      placeholder: |
+        Describe the problem:
+        - What's confusing or unclear?
+        - What information is missing?
+        - What could be explained better?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-improvement
+    attributes:
+      label: Proposed improvement
+      description: How should the documentation be improved?
+      placeholder: |
+        What would make it better?
+        - Specific changes you'd like to see
+        - New sections or examples
+        - Better organization or structure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target-audience
+    attributes:
+      label: Target audience
+      description: Who would benefit most from this documentation improvement?
+      options:
+        - New users/developers
+        - Experienced developers
+        - AI agents
+        - Researchers
+        - Contributors
+        - End users
+        - All audiences
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority level
+      description: How important is this documentation improvement?
+      options:
+        - Low (nice to have)
+        - Medium (would help users)
+        - High (important for adoption)
+        - Critical (blocking users)
+    validations:
+      required: true
+
+  - type: textarea
+    id: specific-location
+    attributes:
+      label: Specific location
+      description: |
+        Where exactly is the documentation issue?
+        (File paths, URLs, section names)
+      placeholder: |
+        Be specific about location:
+        - File: README.md, section "Getting Started"
+        - URL: https://github.com/LanNguyenSi/memory-weaver/blob/main/docs/api.md
+        - Line numbers if applicable
+    validations:
+      required: false
+
+  - type: textarea
+    id: examples-references
+    attributes:
+      label: Examples or references
+      description: |
+        Do you have examples of good documentation for similar projects?
+        Any references or inspirations?
+      placeholder: |
+        Links to good documentation examples:
+        - Similar projects with clear docs
+        - Specific sections that work well
+        - Standards or guidelines to follow
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution-offer
+    attributes:
+      label: Contribution offer
+      description: Would you like to help improve the documentation?
+      options:
+        - label: I'd like to write the improved documentation myself
+          required: false
+        - label: I can provide detailed content/examples for someone else to write
+          required: false
+        - label: I can review and provide feedback on improvements
+          required: false
+        - label: I prefer someone else handles the writing
+          required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: |
+        Any other relevant information?
+        
+        **For AI Agents:** Share perspective on what documentation helps you understand and contribute to projects.
+      placeholder: Any additional thoughts, context, or suggestions
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/LanNguyenSi/memory-weaver/blob/main/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

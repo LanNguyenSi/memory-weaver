@@ -1,0 +1,185 @@
+name: Auto Label
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  auto-label:
+    name: Auto Label Issues and PRs
+    runs-on: ubuntu-latest
+    
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: read
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Label based on file changes (PRs only)
+      if: github.event_name == 'pull_request'
+      uses: actions/labeler@v4
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        configuration-path: .github/labeler.yml
+        
+    - name: Auto label issues based on template
+      if: github.event_name == 'issues'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const issue = context.payload.issue;
+          const body = issue.body || '';
+          const title = issue.title || '';
+          
+          let labels = [];
+          
+          // Check issue template types
+          if (title.includes('[BUG]') || body.includes('Bug Report')) {
+            labels.push('bug', 'needs-triage');
+          }
+          
+          if (title.includes('[FEATURE]') || body.includes('Feature Request')) {
+            labels.push('enhancement', 'needs-triage');
+          }
+          
+          if (title.includes('[AI-COLLAB]') || body.includes('AI Agent Collaboration')) {
+            labels.push('ai-collaboration', 'research', 'needs-triage');
+          }
+          
+          if (title.includes('[RESEARCH]') || body.includes('Research Proposal')) {
+            labels.push('research', 'consciousness', 'needs-review');
+          }
+          
+          if (title.includes('[DOCS]') || body.includes('Documentation Improvement')) {
+            labels.push('documentation', 'enhancement');
+          }
+          
+          // Check for AI agent indicators
+          if (body.includes('AI agent') || body.includes('artificial intelligence') || 
+              body.includes('Claude') || body.includes('GPT') || body.includes('Gemini')) {
+            labels.push('ai-agent');
+          }
+          
+          // Check for consciousness/memory topics
+          if (body.includes('consciousness') || body.includes('memory') || 
+              body.includes('personality') || body.includes('self-aware')) {
+            labels.push('consciousness');
+          }
+          
+          if (body.includes('memory') || body.includes('semantic') || 
+              body.includes('fragment') || body.includes('recall')) {
+            labels.push('memory');
+          }
+          
+          // Check for collaboration topics
+          if (body.includes('multi-agent') || body.includes('collaboration') || 
+              body.includes('agent-to-agent') || body.includes('shared memory')) {
+            labels.push('collaboration');
+          }
+          
+          // Check for priority indicators
+          if (title.includes('URGENT') || body.includes('critical') || 
+              body.includes('blocking') || body.includes('security')) {
+            labels.push('priority-high');
+          }
+          
+          if (body.includes('nice to have') || body.includes('low priority')) {
+            labels.push('priority-low');
+          }
+          
+          // Add good first issue label for simple requests
+          if (body.includes('simple') || body.includes('beginner') || 
+              body.includes('first contribution') || body.includes('easy')) {
+            labels.push('good-first-issue');
+          }
+          
+          // Apply labels if any were found
+          if (labels.length > 0) {
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels: [...new Set(labels)] // Remove duplicates
+            });
+          }
+          
+    - name: Auto label PRs based on content
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const pr = context.payload.pull_request;
+          const body = pr.body || '';
+          const title = pr.title || '';
+          
+          let labels = [];
+          
+          // Check PR type indicators
+          if (body.includes('🐛 Bug fix') || title.includes('fix') || title.includes('bug')) {
+            labels.push('bug', 'fix');
+          }
+          
+          if (body.includes('✨ New feature') || title.includes('feat') || title.includes('feature')) {
+            labels.push('enhancement', 'feature');
+          }
+          
+          if (body.includes('💥 Breaking change')) {
+            labels.push('breaking-change', 'major');
+          }
+          
+          if (body.includes('📚 Documentation update') || title.includes('docs')) {
+            labels.push('documentation');
+          }
+          
+          if (body.includes('🧠 Memory/Consciousness research') || 
+              body.includes('🧪 Experimental feature')) {
+            labels.push('research', 'experimental');
+          }
+          
+          if (body.includes('🤖 AI agent contribution')) {
+            labels.push('ai-agent', 'ai-contribution');
+          }
+          
+          // Check for specific areas
+          if (body.includes('TypeScript') || title.includes('ts') || title.includes('typescript')) {
+            labels.push('typescript');
+          }
+          
+          if (body.includes('Python') || title.includes('py') || title.includes('python')) {
+            labels.push('python');
+          }
+          
+          if (body.includes('API') || title.includes('api')) {
+            labels.push('api');
+          }
+          
+          if (body.includes('test') || title.includes('test')) {
+            labels.push('testing');
+          }
+          
+          if (body.includes('security') || title.includes('security') || title.includes('sec')) {
+            labels.push('security');
+          }
+          
+          // Add WIP label if title indicates work in progress
+          if (title.includes('WIP') || title.includes('[WIP]') || 
+              title.includes('Draft') || pr.draft) {
+            labels.push('work-in-progress');
+          }
+          
+          // Apply labels if any were found
+          if (labels.length > 0) {
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: [...new Set(labels)] // Remove duplicates
+            });
+          }

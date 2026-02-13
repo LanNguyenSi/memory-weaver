@@ -96,6 +96,13 @@ export class Memory {
   size(): number {
     return this.memories.length;
   }
+
+  /**
+   * Get all memories (for development and analysis)
+   */
+  getAllMemories(): MemoryNode[] {
+    return [...this.memories];
+  }
   
   // Private methods
   

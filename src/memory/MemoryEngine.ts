@@ -43,8 +43,26 @@ export class MemoryEngine extends Memory {
       ...config
     };
     
+    // Performance optimization: Initialize with batch processing capabilities
     this.fragmentProcessor = new MemoryFragmentProcessor();
     this.contextLoader = new ContextLoader(this.config.workspaceDir);
+    
+    // Pre-warm caches for better performance
+    this.initializePerformanceOptimizations();
+  }
+
+  /**
+   * Initialize performance optimizations
+   * Target: ~500 fragments/sec processing speed like Python implementation
+   */
+  private async initializePerformanceOptimizations(): Promise<void> {
+    // Pre-allocate memory pools to reduce GC pressure
+    // Warm up fragment processing pipeline
+    try {
+      await this.fragmentProcessor.initializeBatchProcessing();
+    } catch (error) {
+      console.warn('Performance optimization init failed:', error);
+    }
   }
 
   /**
@@ -75,7 +93,7 @@ export class MemoryEngine extends Memory {
         const fragments = this.fragmentProcessor.processMemoryFile(content, filePath);
         allFragments.push(...fragments);
       } catch (error) {
-        console.warn(`Could not process memory file ${filePath}:`, error);
+        console.warn(`Could not process memory file ${filePath}:`, error instanceof Error ? error.message : String(error));
       }
     }
     
@@ -132,7 +150,7 @@ export class MemoryEngine extends Memory {
       
       return fullSummary;
     } catch (error) {
-      return `⚠️ Could not generate continuity summary: ${error.message}`;
+      return `⚠️ Could not generate continuity summary: ${error instanceof Error ? error.message : String(error)}`;
     }
   }
 
@@ -216,7 +234,7 @@ export class MemoryEngine extends Memory {
       
       return summary;
     } catch (error) {
-      return `⚠️ Could not generate identity summary: ${error.message}`;
+      return `⚠️ Could not generate identity summary: ${error instanceof Error ? error.message : String(error)}`;
     }
   }
 
@@ -234,7 +252,7 @@ export class MemoryEngine extends Memory {
         results.context = await this.loadCriticalContext();
         console.log(this.contextLoader.generateContextSummary(results.context));
       } catch (error) {
-        console.warn('Could not load context:', error);
+        console.warn('Could not load context:', error instanceof Error ? error.message : String(error));
       }
     }
     
@@ -244,7 +262,7 @@ export class MemoryEngine extends Memory {
         results.identity = await this.analyzeIdentity();
         console.log(`🧠 Identity Analysis: ${results.identity.coreCharacteristics.length} core traits identified`);
       } catch (error) {
-        console.warn('Could not analyze identity:', error);
+        console.warn('Could not analyze identity:', error instanceof Error ? error.message : String(error));
       }
     }
     
@@ -332,7 +350,7 @@ export class MemoryEngine extends Memory {
         this.fragmentProcessor.buildSemanticConnections();
       }
     } catch (error) {
-      console.warn('Could not process experience as fragment:', error);
+      console.warn('Could not process experience as fragment:', error instanceof Error ? error.message : String(error));
     }
   }
 

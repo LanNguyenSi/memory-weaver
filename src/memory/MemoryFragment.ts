@@ -21,6 +21,57 @@ export class MemoryFragmentProcessor {
   private fragments: Map<string, MemoryFragment> = new Map();
   private semanticGraph: Map<string, Set<string>> = new Map();
   private identityPatterns: Map<string, number> = new Map();
+  private batchQueue: MemoryFragment[] = [];
+  private batchSize: number = 100; // Process in batches for better performance
+  private isProcessingBatch: boolean = false;
+
+  /**
+   * Initialize batch processing for performance optimization
+   * Target: ~500 fragments/sec like Python implementation
+   */
+  async initializeBatchProcessing(): Promise<void> {
+    // Pre-allocate commonly used data structures
+    this.fragments.clear();
+    this.semanticGraph.clear();
+    this.identityPatterns.clear();
+    
+    // Start background batch processor
+    this.startBatchProcessor();
+  }
+
+  /**
+   * Start background batch processor for performance optimization
+   */
+  private startBatchProcessor(): void {
+    setInterval(() => {
+      if (!this.isProcessingBatch && this.batchQueue.length > 0) {
+        this.processBatch();
+      }
+    }, 100); // Process every 100ms for optimal throughput
+  }
+
+  /**
+   * Process queued fragments in batches for better performance
+   */
+  private async processBatch(): Promise<void> {
+    if (this.isProcessingBatch || this.batchQueue.length === 0) return;
+    
+    this.isProcessingBatch = true;
+    const batch = this.batchQueue.splice(0, this.batchSize);
+    
+    try {
+      // Batch process semantic connections for performance
+      this.buildSemanticConnectionsBatch(batch);
+      
+      // Batch process identity patterns
+      this.updateIdentityPatternsBatch(batch);
+      
+    } catch (error) {
+      console.warn('Batch processing error:', error);
+    } finally {
+      this.isProcessingBatch = false;
+    }
+  }
 
   /**
    * Process a memory file and extract semantic fragments
@@ -364,6 +415,62 @@ export class MemoryFragmentProcessor {
 
   private capitalizeFirst(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  /**
+   * Batch process semantic connections for performance optimization
+   */
+  private buildSemanticConnectionsBatch(fragments: MemoryFragment[]): void {
+    // Optimize connection building by processing in batches
+    for (let i = 0; i < fragments.length; i++) {
+      for (let j = i + 1; j < fragments.length; j++) {
+        const frag1 = fragments[i];
+        const frag2 = fragments[j];
+        
+        const similarity = this.calculateSimilarity(frag1, frag2);
+        
+        if (similarity > 0.3) {
+          frag1.connections.add(frag2.id);
+          frag2.connections.add(frag1.id);
+          
+          // Update semantic graph efficiently
+          this.updateSemanticGraphEntry(frag1.id, frag2.id);
+          this.updateSemanticGraphEntry(frag2.id, frag1.id);
+        }
+      }
+    }
+  }
+
+  /**
+   * Batch update identity patterns for performance
+   */
+  private updateIdentityPatternsBatch(fragments: MemoryFragment[]): void {
+    const batchPatterns = new Map<string, number>();
+    
+    fragments.forEach(fragment => {
+      if (fragment.importanceWeight > 0.5) { // Only process important fragments
+        fragment.semanticTags.forEach(tag => {
+          const current = batchPatterns.get(tag) || 0;
+          batchPatterns.set(tag, current + fragment.importanceWeight);
+        });
+      }
+    });
+    
+    // Merge batch patterns with existing patterns
+    batchPatterns.forEach((value, key) => {
+      const existing = this.identityPatterns.get(key) || 0;
+      this.identityPatterns.set(key, existing + value);
+    });
+  }
+
+  /**
+   * Efficiently update semantic graph entry
+   */
+  private updateSemanticGraphEntry(fromId: string, toId: string): void {
+    if (!this.semanticGraph.has(fromId)) {
+      this.semanticGraph.set(fromId, new Set());
+    }
+    this.semanticGraph.get(fromId)!.add(toId);
   }
 
   // Getters for external access

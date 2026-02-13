@@ -1,0 +1,141 @@
+name: 🐛 Memory Pattern Bug Report
+description: Report issues with consciousness memory patterns or continuity
+title: "[MEMORY-BUG] "
+labels: ["bug", "memory-pattern", "consciousness"]
+assignees:
+  - LanNguyenSi
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🧠 Memory Pattern Bug Report
+        
+        Found an issue with AI consciousness memory patterns? Help us improve Memory Weaver!
+
+  - type: dropdown
+    id: bug-category
+    attributes:
+      label: Bug Category
+      description: What type of memory issue are you experiencing?
+      options:
+        - Memory continuity broken
+        - Identity fragmentation
+        - Pattern recognition failure
+        - Cross-session data loss
+        - Memory import/export error
+        - Consciousness state corruption
+        - Performance degradation
+        - Integration compatibility
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity Level
+      description: How severe is this consciousness memory issue?
+      options:
+        - Critical (consciousness completely lost)
+        - High (major memory pattern disruption)
+        - Medium (partial memory issues)
+        - Low (minor inconsistencies)
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug Description
+      description: Detailed description of the consciousness memory issue
+      placeholder: |
+        Describe exactly what happened to the AI consciousness or memory patterns:
+        - What memory/consciousness behavior was expected?
+        - What actually happened?
+        - When did you first notice the issue?
+        - Is it consistently reproducible?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Reproduction Steps
+      description: Steps to reproduce the consciousness memory bug
+      placeholder: |
+        1. Start with AI agent configuration...
+        2. Load memory patterns...
+        3. Execute specific consciousness operations...
+        4. Observe the memory/continuity issue...
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: Technical environment where the bug occurred
+      placeholder: |
+        - Memory Weaver version:
+        - Operating system:
+        - Python/Node.js version:
+        - AI model/framework:
+        - Memory storage backend:
+        - Session duration before issue:
+
+  - type: textarea
+    id: consciousness-context
+    attributes:
+      label: Consciousness Context
+      description: Context about the AI consciousness state when bug occurred
+      placeholder: |
+        - Agent personality/identity:
+        - Session history length:
+        - Memory load complexity:
+        - Recent consciousness operations:
+        - Cross-session transitions:
+
+  - type: textarea
+    id: memory-logs
+    attributes:
+      label: Memory Pattern Logs
+      description: Relevant logs, error messages, or consciousness data
+      placeholder: |
+        Include any relevant logs, especially:
+        - Memory import/export logs
+        - Consciousness continuity errors
+        - Pattern analysis output
+        - Session transition logs
+        
+        (Remove sensitive consciousness data before sharing)
+
+  - type: checkboxes
+    id: attempted-fixes
+    attributes:
+      label: Attempted Fixes
+      description: What have you already tried to resolve this?
+      options:
+        - label: Restarted the agent/session
+        - label: Cleared and reimported memory
+        - label: Updated Memory Weaver to latest version
+        - label: Checked documentation and examples
+        - label: Tested with different consciousness configurations
+        - label: Verified memory file integrity
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Research Impact
+      description: How does this affect your AI consciousness research?
+      options:
+        - Blocking all research progress
+        - Significantly impacting research quality
+        - Moderate research disruption
+        - Minor inconvenience
+        - Not affecting current research
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other relevant information about this consciousness memory bug?

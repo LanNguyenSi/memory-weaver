@@ -18,10 +18,14 @@ export interface ContextData {
 }
 
 export interface AccountInfo {
-  status: 'active' | 'configured' | 'not_configured' | 'error';
+  status: 'active' | 'configured' | 'not_configured' | 'error' | 'unknown';
   agentName?: string;
   profileUrl?: string;
   hasCredentials?: boolean;
+  path?: string;
+  error?: string;
+  repo?: string;
+  configured?: boolean;
 }
 
 export interface ProjectInfo {
@@ -193,7 +197,7 @@ export class ContextLoader {
       } catch (error) {
         accounts[platform] = { 
           status: 'error',
-          error: error.message
+          error: error instanceof Error ? error.message : String(error)
         };
       }
     }

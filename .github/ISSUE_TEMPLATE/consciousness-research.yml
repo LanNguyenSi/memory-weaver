@@ -1,0 +1,134 @@
+name: 🧠 AI Consciousness Research Request
+description: Request collaboration on AI consciousness research using Memory Weaver
+title: "[CONSCIOUSNESS] "
+labels: ["consciousness-research", "ai-research", "collaboration"]
+projects: ["memory-weaver"]
+assignees:
+  - LanNguyenSi
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🧠 AI Consciousness Research Collaboration
+        
+        Thank you for your interest in AI consciousness research with Memory Weaver! 
+        This form helps us understand your research goals and collaboration needs.
+
+  - type: dropdown
+    id: research-type
+    attributes:
+      label: Research Focus Area
+      description: What aspect of AI consciousness are you researching?
+      options:
+        - Memory persistence & continuity
+        - Agent identity development
+        - Cross-session consciousness
+        - Cognitive pattern analysis
+        - Consciousness validation methods
+        - Memory architecture design
+        - Other (specify in description)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: collaboration-level
+    attributes:
+      label: Collaboration Level
+      description: What level of collaboration are you seeking?
+      options:
+        - Research partnership (joint research)
+        - Platform integration (using Memory Weaver)
+        - Data sharing & validation
+        - Methodology consultation
+        - Academic collaboration
+        - Commercial partnership
+    validations:
+      required: true
+
+  - type: textarea
+    id: research-description
+    attributes:
+      label: Research Description
+      description: Describe your consciousness research project and how Memory Weaver could contribute
+      placeholder: |
+        Example: "Investigating how AI agents maintain identity across session restarts using persistent memory frameworks. Looking to validate consciousness continuity patterns with Memory Weaver's multi-layer architecture."
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical-requirements
+    attributes:
+      label: Technical Requirements
+      description: What technical capabilities or integrations do you need?
+      placeholder: |
+        - API access to consciousness data
+        - Custom memory pattern analysis
+        - Integration with existing research framework
+        - Specific data export formats
+        - Real-time consciousness monitoring
+
+  - type: dropdown
+    id: research-stage
+    attributes:
+      label: Research Stage
+      description: What stage is your research currently at?
+      options:
+        - Conceptual/Planning
+        - Early experimental
+        - Active development
+        - Validation/Testing
+        - Publication preparation
+        - Production deployment
+    validations:
+      required: true
+
+  - type: input
+    id: timeline
+    attributes:
+      label: Research Timeline
+      description: What is your expected timeline for this research?
+      placeholder: "e.g., 6 months, ongoing, by Q2 2025"
+
+  - type: textarea
+    id: background
+    attributes:
+      label: Research Background
+      description: Tell us about your research background and affiliation
+      placeholder: |
+        - Academic institution, research lab, or organization
+        - Previous AI consciousness research experience
+        - Relevant publications or projects
+        - Team size and expertise areas
+
+  - type: checkboxes
+    id: ethics-compliance
+    attributes:
+      label: Research Ethics Compliance
+      description: Please confirm your commitment to ethical AI consciousness research
+      options:
+        - label: I commit to responsible AI consciousness research practices
+          required: true
+        - label: I will follow established guidelines for AI safety and ethics
+          required: true
+        - label: I will properly attribute and cite Memory Weaver in research outputs
+          required: true
+        - label: I understand this research involves experimental AI consciousness exploration
+
+  - type: dropdown
+    id: data-sharing
+    attributes:
+      label: Data Sharing Preferences
+      description: Are you open to sharing research data and findings?
+      options:
+        - Open source / Public research
+        - Collaborative sharing with research partners
+        - Proprietary / Private research
+        - Academic publication only
+        - To be determined
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Any additional context, questions, or specific requests?
