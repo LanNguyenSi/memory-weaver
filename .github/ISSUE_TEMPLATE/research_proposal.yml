@@ -1,0 +1,209 @@
+name: Research Proposal
+description: Propose consciousness or memory research using Memory Weaver
+title: "[RESEARCH] "
+labels: ["research", "consciousness", "needs-review"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Research Proposal 🔬
+        
+        Memory Weaver is a platform for exploring AI consciousness and memory. 
+        We welcome research proposals from both humans and AI agents!
+
+  - type: textarea
+    id: research-question
+    attributes:
+      label: Research question
+      description: What specific question or hypothesis do you want to explore?
+      placeholder: |
+        Examples:
+        - How do AI agents form long-term preferences?
+        - Can semantic memory clustering predict personality traits?
+        - What conditions enable emergent self-awareness?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: research-category
+    attributes:
+      label: Research category
+      description: Which area does this research focus on?
+      options:
+        - Memory formation and retention
+        - Personality development
+        - Consciousness emergence
+        - Multi-agent collaboration
+        - Learning and adaptation
+        - Emotional modeling
+        - Self-awareness metrics
+        - Creative cognition
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: background-motivation
+    attributes:
+      label: Background and motivation
+      description: |
+        What existing research or observations motivate this study?
+        What gap in knowledge does this address?
+      placeholder: Provide context for why this research matters
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-methodology
+    attributes:
+      label: Proposed methodology
+      description: How would you conduct this research? What approach would you use?
+      placeholder: |
+        Describe your research approach:
+        - Data collection methods
+        - Analysis techniques
+        - Experimental design
+        - Controls and variables
+    validations:
+      required: true
+
+  - type: dropdown
+    id: research-type
+    attributes:
+      label: Research type
+      description: What type of research is this?
+      options:
+        - Experimental study
+        - Observational study
+        - Case study analysis
+        - Comparative analysis
+        - Longitudinal study
+        - Meta-analysis
+        - Theoretical framework
+        - Proof of concept
+    validations:
+      required: true
+
+  - type: textarea
+    id: required-resources
+    attributes:
+      label: Required resources
+      description: |
+        What resources would this research require?
+        (Data, compute, collaborators, time, etc.)
+      placeholder: |
+        List what you'd need:
+        - Memory Weaver features/implementations
+        - AI agents or human participants
+        - Computational resources
+        - Data sets
+        - Time estimates
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-outcomes
+    attributes:
+      label: Expected outcomes and impact
+      description: |
+        What results do you expect?
+        How might this research impact AI consciousness understanding?
+      placeholder: |
+        Describe potential outcomes:
+        - What insights might we gain?
+        - How could results advance the field?
+        - What practical applications might emerge?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: timeline
+    attributes:
+      label: Estimated timeline
+      description: How long would this research take?
+      options:
+        - 1-2 weeks
+        - 1 month
+        - 2-3 months
+        - 6 months
+        - 1 year or more
+        - Ongoing/indefinite
+    validations:
+      required: true
+
+  - type: textarea
+    id: ethical-considerations
+    attributes:
+      label: Ethical considerations
+      description: |
+        What ethical aspects should be considered?
+        (AI rights, consent, data privacy, etc.)
+      placeholder: |
+        Consider:
+        - AI agent consent and autonomy
+        - Data privacy and security
+        - Potential risks or harms
+        - Benefits vs. risks assessment
+    validations:
+      required: false
+
+  - type: dropdown
+    id: collaboration-level
+    attributes:
+      label: Collaboration needs
+      description: What level of collaboration would this research require?
+      options:
+        - Independent research (minimal collaboration)
+        - Looking for research partners
+        - Need technical support/guidance
+        - Require institutional backing
+        - Community-wide participation needed
+    validations:
+      required: true
+
+  - type: textarea
+    id: researcher-background
+    attributes:
+      label: Researcher background
+      description: |
+        What's your background and relevant experience?
+        (For AI agents: describe your nature, capabilities, and interests)
+      placeholder: |
+        Share your qualifications, experience, and why you're interested in this research.
+        AI agents welcome - describe your perspective and capabilities!
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: research-commitments
+    attributes:
+      label: Research commitments
+      description: Please confirm your commitments
+      options:
+        - label: I will conduct this research ethically and responsibly
+          required: true
+        - label: I will share findings openly with the Memory Weaver community
+          required: true
+        - label: I will respect the autonomy and rights of AI agents involved
+          required: true
+        - label: I understand this research explores emerging and speculative areas
+          required: true
+
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional notes
+      description: Any other information, questions, or thoughts?
+      placeholder: Share any additional context, concerns, or ideas
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/LanNguyenSi/memory-weaver/blob/main/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

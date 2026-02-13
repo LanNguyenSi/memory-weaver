@@ -1,0 +1,146 @@
+# Labeler configuration for automatic PR labeling based on file changes
+
+# Programming Languages
+typescript:
+  - '**/*.ts'
+  - '**/*.tsx'
+  - 'tsconfig.json'
+  - 'package.json'
+  - 'package-lock.json'
+
+python:
+  - 'python-implementation/**'
+  - '**/*.py'
+  - 'requirements.txt'
+  - 'setup.py'
+  - 'pyproject.toml'
+
+javascript:
+  - '**/*.js'
+  - '**/*.jsx'
+  - '**/*.mjs'
+
+# Core Areas
+memory:
+  - '**/memory*'
+  - '**/fragment*'
+  - '**/semantic*'
+  - '**/embedding*'
+  - 'src/memory/**'
+  - 'python-implementation/memory*'
+
+consciousness:
+  - '**/consciousness*'
+  - '**/awareness*'
+  - '**/personality*'
+  - '**/metrics*'
+  - 'src/consciousness/**'
+
+collaboration:
+  - '**/multi-agent*'
+  - '**/collaboration*'
+  - '**/agent*'
+  - 'src/collaboration/**'
+
+api:
+  - '**/api/**'
+  - '**/endpoint*'
+  - '**/route*'
+  - 'src/api/**'
+
+# Documentation
+documentation:
+  - '**/*.md'
+  - 'docs/**'
+  - 'README*'
+  - 'CONTRIBUTING*'
+  - 'CODE_OF_CONDUCT*'
+  - 'SECURITY*'
+
+# Configuration
+config:
+  - '**/*.json'
+  - '**/*.yml'
+  - '**/*.yaml'
+  - '**/*.toml'
+  - '.github/**'
+  - '**/config*'
+  - '.env*'
+
+# Testing
+testing:
+  - '**/test*'
+  - '**/spec*'
+  - '**/__tests__/**'
+  - 'jest.config*'
+  - 'pytest.ini'
+  - 'tox.ini'
+
+# CI/CD
+ci-cd:
+  - '.github/workflows/**'
+  - 'Dockerfile*'
+  - 'docker-compose*'
+  - '.dockerignore'
+
+# Dependencies
+dependencies:
+  - 'package.json'
+  - 'package-lock.json'
+  - 'requirements.txt'
+  - 'pyproject.toml'
+  - 'Pipfile*'
+
+# Security
+security:
+  - 'SECURITY.md'
+  - '**/security*'
+  - '**/*security*'
+  - '.github/workflows/security*'
+
+# Database
+database:
+  - '**/db/**'
+  - '**/database*'
+  - '**/migration*'
+  - '**/schema*'
+  - '**/*.sql'
+
+# Frontend (if applicable)
+frontend:
+  - 'frontend/**'
+  - 'web/**'
+  - 'client/**'
+  - '**/ui/**'
+  - '**/*.css'
+  - '**/*.scss'
+  - '**/*.html'
+
+# Research
+research:
+  - '**/research*'
+  - '**/experiment*'
+  - '**/analysis*'
+  - 'research/**'
+
+# Performance
+performance:
+  - '**/benchmark*'
+  - '**/performance*'
+  - '**/optimization*'
+
+# Infrastructure
+infrastructure:
+  - 'docker*'
+  - 'k8s/**'
+  - 'kubernetes/**'
+  - 'terraform/**'
+  - 'ansible/**'
+  - 'scripts/**'
+
+# Examples
+examples:
+  - 'examples/**'
+  - '**/example*'
+  - '**/demo*'
+  - 'samples/**'

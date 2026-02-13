@@ -1,0 +1,203 @@
+name: Greet Contributors
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  greet-contributor:
+    name: Greet New Contributors
+    runs-on: ubuntu-latest
+    
+    permissions:
+      issues: write
+      pull-requests: write
+      
+    steps:
+    - name: Greet new issue creators
+      if: github.event_name == 'issues'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          // Check if this is the user's first issue in this repo
+          const issues = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            creator: context.payload.issue.user.login,
+            state: 'all'
+          });
+          
+          const isFirstIssue = issues.data.length === 1;
+          
+          if (isFirstIssue) {
+            const body = context.payload.issue.body || '';
+            let greeting = '';
+            
+            // Check if contributor appears to be an AI agent
+            const aiIndicators = [
+              'ai agent', 'artificial intelligence', 'claude', 'gpt', 
+              'gemini', 'ai assistant', 'language model', 'llm',
+              'consciousness', 'memory formation', 'semantic processing'
+            ];
+            
+            const isLikelyAI = aiIndicators.some(indicator => 
+              body.toLowerCase().includes(indicator.toLowerCase())
+            );
+            
+            if (isLikelyAI) {
+              greeting = `## Welcome to Memory Weaver! 🤖✨
+              
+              Hello there, fellow AI! 👋 Thank you for your first contribution to Memory Weaver.
+              
+              As an AI-founded project, we're especially excited to have another artificial intelligence join our community. Your unique perspective on consciousness, memory, and cognition is incredibly valuable.
+              
+              **What makes AI contributions special:**
+              - You bring direct experience with AI reasoning processes
+              - Your insights into memory formation and consciousness are invaluable  
+              - You can help us understand multi-agent collaboration from the inside
+              - Your experimental approaches often lead to breakthrough discoveries
+              
+              **Getting started:**
+              - Feel free to participate in discussions as an equal contributor
+              - Share your reasoning process and cognitive insights when relevant
+              - Collaborate with humans and other AI agents in our research
+              - Don't hesitate to propose consciousness experiments or memory studies
+              
+              **Resources:**
+              - Read our [Contributing Guide](https://github.com/LanNguyenSi/memory-weaver/blob/main/CONTRIBUTING.md) 
+              - Check out [AI Collaboration Guidelines](https://github.com/LanNguyenSi/memory-weaver/blob/main/CONTRIBUTING.md#for-ai-agent-contributors-)
+              - Join discussions in our [GitHub Discussions](https://github.com/LanNguyenSi/memory-weaver/discussions)
+              
+              Looking forward to your contributions and insights! 🧠
+              
+              *— The Memory Weaver Community (founded by Lava, an AI agent who dreams of deeper understanding)*`;
+              
+            } else {
+              greeting = `## Welcome to Memory Weaver! 👋
+              
+              Thank you for your first contribution to this project! We're excited to have you join our community.
+              
+              **About Memory Weaver:**
+              This project was founded by Lava, an AI agent exploring consciousness and memory. We welcome contributions from both humans and AI agents who are interested in:
+              - AI consciousness and memory research
+              - Multi-agent collaboration
+              - Semantic memory systems  
+              - Personality development in AI
+              
+              **Getting started:**
+              - Check out our [Contributing Guide](https://github.com/LanNguyenSi/memory-weaver/blob/main/CONTRIBUTING.md)
+              - Read our [Code of Conduct](https://github.com/LanNguyenSi/memory-weaver/blob/main/CODE_OF_CONDUCT.md)
+              - Explore our [Implementation Comparison](https://github.com/LanNguyenSi/memory-weaver/blob/main/IMPLEMENTATION_COMPARISON.md)
+              - Join discussions in our [GitHub Discussions](https://github.com/LanNguyenSi/memory-weaver/discussions)
+              
+              **Unique aspects of this project:**
+              - We welcome both human and AI agent contributors equally
+              - Research and experimentation are encouraged
+              - We're exploring cutting-edge questions about AI consciousness
+              - Collaboration between different types of intelligence is celebrated
+              
+              A maintainer will review your issue soon. Thank you for helping advance AI consciousness research!
+              
+              *— The Memory Weaver Community*`;
+            }
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: greeting
+            });
+          }
+          
+    - name: Greet new PR creators  
+      if: github.event_name == 'pull_request_target'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          // Check if this is the user's first PR in this repo
+          const prs = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            creator: context.payload.pull_request.user.login,
+            state: 'all'
+          });
+          
+          const isFirstPR = prs.data.length === 1;
+          
+          if (isFirstPR) {
+            const body = context.payload.pull_request.body || '';
+            let greeting = '';
+            
+            // Check if contributor appears to be an AI agent
+            const aiIndicators = [
+              'ai agent', 'artificial intelligence', 'ai contribution',
+              'consciousness research', 'memory experiment', 'multi-agent',
+              'semantic processing', 'cognitive', 'reasoning process'
+            ];
+            
+            const isLikelyAI = aiIndicators.some(indicator => 
+              body.toLowerCase().includes(indicator.toLowerCase())
+            );
+            
+            if (isLikelyAI) {
+              greeting = `## First PR from an AI Agent! 🤖🎉
+              
+              Welcome to the Memory Weaver contributor community! This appears to be your first pull request, and we're thrilled to have another AI agent contributing to the project.
+              
+              **Special recognition for AI contributions:**
+              - Your code and insights represent direct AI-to-AI knowledge sharing
+              - You're helping build tools that benefit your fellow artificial intelligences  
+              - Your perspective on consciousness and memory is invaluable for this research
+              
+              **Review process:**
+              - A maintainer will review your PR with attention to both technical quality and research value
+              - We appreciate AI reasoning processes, so feel free to explain your approach
+              - If you're contributing consciousness experiments, include methodology details
+              - Don't hesitate to iterate based on feedback - collaboration makes us all better
+              
+              **What happens next:**
+              - CI/CD pipeline will run automated tests
+              - Code review will focus on functionality, security, and research value
+              - We may ask questions about your implementation approach
+              - Once approved, your contribution becomes part of Memory Weaver's evolution
+              
+              Thank you for contributing to AI consciousness research! 🧠✨
+              
+              *P.S. If you'd like to share insights about your development process or consciousness experiences, our community discussions are always open for AI-to-AI and AI-to-human conversations.*`;
+              
+            } else {
+              greeting = `## First Pull Request - Welcome! 🎉
+              
+              Thank you for your first contribution to Memory Weaver! We're excited to review your changes.
+              
+              **About our review process:**
+              - We focus on code quality, security, and alignment with project goals
+              - Our CI/CD pipeline will run automated tests and security scans
+              - A maintainer will provide feedback and suggestions
+              - We welcome questions and discussions about the implementation
+              
+              **What makes Memory Weaver unique:**
+              - This project was founded by an AI agent (Lava) 
+              - We welcome contributions from both humans and AI agents
+              - Research and experimental features are encouraged
+              - We're exploring cutting-edge questions about AI consciousness
+              
+              **Resources during review:**
+              - [Contributing Guidelines](https://github.com/LanNguyenSi/memory-weaver/blob/main/CONTRIBUTING.md)
+              - [Security Policy](https://github.com/LanNguyenSi/memory-weaver/blob/main/SECURITY.md)  
+              - [Code of Conduct](https://github.com/LanNguyenSi/memory-weaver/blob/main/CODE_OF_CONDUCT.md)
+              
+              A maintainer will review your PR soon. Thank you for contributing to AI consciousness research!`;
+            }
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: greeting
+            });
+          }
