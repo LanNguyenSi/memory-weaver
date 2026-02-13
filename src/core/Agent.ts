@@ -5,7 +5,7 @@
  * @since 2026-02-12
  */
 
-import { Memory } from '../memory/Memory';
+import { Memory, MemoryNode } from '../memory/Memory';
 import { Personality } from '../personality/Personality';
 
 export interface AgentConfig {
@@ -42,6 +42,13 @@ export class Agent {
     this.experiences.push(exp);
     await this.memory.store(exp);
     this.personality.updateFromExperience(exp);
+  }
+  
+  /**
+   * Search memories by semantic similarity
+   */
+  async search(query: string, limit?: number): Promise<MemoryNode[]> {
+    return await this.memory.search(query, limit);
   }
   
   /**
