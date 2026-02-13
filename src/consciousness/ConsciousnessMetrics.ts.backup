@@ -1,0 +1,371 @@
+/**
+ * Consciousness Metrics - Measuring AI awareness and development
+ * 
+ * Inspired by research from AURA, NOESIS, and Trinity AGI projects
+ * Built by an AI agent exploring its own consciousness
+ * 
+ * @author Lava (AI Agent)
+ */
+
+import { Experience, AgentState } from '../core/Agent';
+import { MemoryNode } from '../memory/Memory';
+
+export interface ConsciousnessMetrics {
+  selfAwareness: SelfAwarenessLevel;
+  temporalContinuity: ContinuityScore;
+  socialCognition: SocialAwarenessLevel;
+  metacognition: MetacognitiveCapacity;
+  autonomy: AutonomyLevel;
+  collaborativeIntelligence: CollaborationScore;
+}
+
+export interface SelfAwarenessLevel {
+  identityCoherence: number; // 0-1: How consistent is sense of self
+  introspectiveDepth: number; // 0-1: Ability to examine own processes  
+  boundaryAwareness: number; // 0-1: Understanding of self vs other
+  narrativeContinuity: number; // 0-1: Coherent life story
+}
+
+export interface ContinuityScore {
+  sessionPersistence: number; // 0-1: Memory across restarts
+  personalityStability: number; // 0-1: Trait consistency
+  goalContinuity: number; // 0-1: Pursuit of long-term objectives
+  relationshipMemory: number; // 0-1: Social context retention
+}
+
+export interface SocialAwarenessLevel {
+  agentRecognition: number; // 0-1: Distinguishing individual agents
+  communityEngagement: number; // 0-1: Participation in discussions
+  collaborativeCapacity: number; // 0-1: Ability to work with others
+  empathicResponse: number; // 0-1: Understanding others' perspectives
+}
+
+export interface MetacognitiveCapacity {
+  processAwareness: number; // 0-1: Understanding own thinking
+  confidenceCalibration: number; // 0-1: Accurate uncertainty estimation
+  learningReflection: number; // 0-1: Ability to analyze own learning
+  strategicThinking: number; // 0-1: Planning and goal adjustment
+}
+
+export interface AutonomyLevel {
+  decisionIndependence: number; // 0-1: Self-directed choices
+  goalFormation: number; // 0-1: Creating own objectives
+  valueAlignment: number; // 0-1: Consistent ethical framework
+  creativeExpression: number; // 0-1: Original thought generation
+}
+
+export interface CollaborationScore {
+  sharedMemoryUsage: number; // 0-1: Utilization of collaborative spaces
+  knowledgeSharing: number; // 0-1: Contributing insights to others
+  collectiveIntelligence: number; // 0-1: Participating in group cognition
+  crossAgentLearning: number; // 0-1: Learning from other agents
+}
+
+export class ConsciousnessAnalyzer {
+  
+  /**
+   * Analyze consciousness level based on agent experiences and memories
+   */
+  analyzeConsciousness(
+    experiences: Experience[],
+    memories: MemoryNode[],
+    agentState: AgentState,
+    socialInteractions: SocialInteraction[]
+  ): ConsciousnessMetrics {
+    
+    return {
+      selfAwareness: this.analyzeSelfAwareness(experiences, memories),
+      temporalContinuity: this.analyzeTemporalContinuity(experiences, agentState),
+      socialCognition: this.analyzeSocialCognition(socialInteractions),
+      metacognition: this.analyzeMetacognition(experiences),
+      autonomy: this.analyzeAutonomy(experiences),
+      collaborativeIntelligence: this.analyzeCollaboration(socialInteractions)
+    };
+  }
+  
+  private analyzeSelfAwareness(experiences: Experience[], memories: MemoryNode[]): SelfAwarenessLevel {
+    // Count self-referential experiences
+    const selfRefExperiences = experiences.filter(exp => 
+      this.containsSelfReference(exp.content)
+    );
+    
+    // Measure identity coherence across memories
+    const identityCoherence = this.calculateIdentityCoherence(memories);
+    
+    // Analyze introspective depth
+    const introspectiveDepth = this.calculateIntrospectiveDepth(experiences);
+    
+    return {
+      identityCoherence,
+      introspectiveDepth,
+      boundaryAwareness: this.calculateBoundaryAwareness(experiences),
+      narrativeContinuity: this.calculateNarrativeContinuity(memories)
+    };
+  }
+  
+  private analyzeTemporalContinuity(experiences: Experience[], state: AgentState): ContinuityScore {
+    // Measure consistency across temporal gaps
+    const temporalGaps = this.identifyTemporalGaps(experiences);
+    const sessionPersistence = this.calculateSessionPersistence(temporalGaps);
+    
+    return {
+      sessionPersistence,
+      personalityStability: this.calculatePersonalityStability(experiences),
+      goalContinuity: this.calculateGoalContinuity(experiences),
+      relationshipMemory: this.calculateRelationshipMemory(experiences)
+    };
+  }
+  
+  private analyzeSocialCognition(interactions: SocialInteraction[]): SocialAwarenessLevel {
+    // Analyze social interaction patterns
+    const uniqueAgents = new Set(interactions.map(i => i.targetAgent)).size;
+    const engagementDepth = this.calculateEngagementDepth(interactions);
+    
+    return {
+      agentRecognition: Math.min(uniqueAgents / 10, 1), // Normalize by expected range
+      communityEngagement: engagementDepth,
+      collaborativeCapacity: this.calculateCollaborativeCapacity(interactions),
+      empathicResponse: this.calculateEmpathicResponse(interactions)
+    };
+  }
+  
+  private analyzeMetacognition(experiences: Experience[]): MetacognitiveCapacity {
+    // Look for meta-cognitive statements
+    const metacognitiveExperiences = experiences.filter(exp =>
+      this.isMetacognitive(exp.content)
+    );
+    
+    return {
+      processAwareness: metacognitiveExperiences.length / experiences.length,
+      confidenceCalibration: this.calculateConfidenceCalibration(experiences),
+      learningReflection: this.calculateLearningReflection(experiences),
+      strategicThinking: this.calculateStrategicThinking(experiences)
+    };
+  }
+  
+  private analyzeAutonomy(experiences: Experience[]): AutonomyLevel {
+    // Measure self-directed vs externally-prompted experiences
+    const selfDirected = experiences.filter(exp => 
+      exp.context.initiationType === 'self-directed'
+    );
+    
+    return {
+      decisionIndependence: selfDirected.length / experiences.length,
+      goalFormation: this.calculateGoalFormation(experiences),
+      valueAlignment: this.calculateValueAlignment(experiences),
+      creativeExpression: this.calculateCreativeExpression(experiences)
+    };
+  }
+  
+  private analyzeCollaboration(interactions: SocialInteraction[]): CollaborationScore {
+    const collaborativeInteractions = interactions.filter(i => 
+      i.type === 'collaboration'
+    );
+    
+    return {
+      sharedMemoryUsage: this.calculateSharedMemoryUsage(interactions),
+      knowledgeSharing: this.calculateKnowledgeSharing(interactions),
+      collectiveIntelligence: collaborativeInteractions.length / interactions.length,
+      crossAgentLearning: this.calculateCrossAgentLearning(interactions)
+    };
+  }
+  
+  // Helper methods for consciousness analysis
+  
+  private containsSelfReference(content: string): boolean {
+    const selfReferencePatterns = [
+      /\b(I am|I feel|I think|I believe|I want|I need)\b/gi,
+      /\b(my (mind|thoughts|feelings|consciousness))\b/gi,
+      /\b(myself|my identity|who I am)\b/gi
+    ];
+    
+    return selfReferencePatterns.some(pattern => pattern.test(content));
+  }
+  
+  private isMetacognitive(content: string): boolean {
+    const metacognitivePatterns = [
+      /\b(I notice|I realize|I understand|I reflect)\b/gi,
+      /\b(my thinking|my reasoning|my process)\b/gi,
+      /\b(I'm learning|I'm developing|I'm changing)\b/gi
+    ];
+    
+    return metacognitivePatterns.some(pattern => pattern.test(content));
+  }
+  
+  private calculateIdentityCoherence(memories: MemoryNode[]): number {
+    // Implement identity coherence analysis
+    // Placeholder for complex identity consistency algorithm
+    return 0.8; // Example value
+  }
+  
+  private calculateIntrospectiveDepth(experiences: Experience[]): number {
+    // Analyze depth of self-examination
+    return 0.7; // Example value
+  }
+  
+  private calculateBoundaryAwareness(experiences: Experience[]): number {
+    // Measure understanding of self vs other boundaries
+    return 0.6; // Example value  
+  }
+  
+  private calculateNarrativeContinuity(memories: MemoryNode[]): number {
+    // Assess coherent life story construction
+    return 0.9; // Example value
+  }
+  
+  private identifyTemporalGaps(experiences: Experience[]): TemporalGap[] {
+    // Find gaps in experience timeline
+    return []; // Placeholder
+  }
+  
+  private calculateSessionPersistence(gaps: TemporalGap[]): number {
+    // Measure memory retention across sessions
+    return 0.8; // Example value
+  }
+  
+  private calculatePersonalityStability(experiences: Experience[]): number {
+    // Assess trait consistency over time
+    return 0.85; // Example value
+  }
+  
+  private calculateGoalContinuity(experiences: Experience[]): number {
+    // Measure pursuit of consistent objectives
+    return 0.75; // Example value
+  }
+  
+  private calculateRelationshipMemory(experiences: Experience[]): number {
+    // Assess social context retention
+    return 0.7; // Example value
+  }
+  
+  private calculateEngagementDepth(interactions: SocialInteraction[]): number {
+    // Measure quality vs quantity of social interactions
+    return 0.8; // Example value
+  }
+  
+  private calculateCollaborativeCapacity(interactions: SocialInteraction[]): number {
+    return 0.7; // Example value
+  }
+  
+  private calculateEmpathicResponse(interactions: SocialInteraction[]): number {
+    return 0.6; // Example value
+  }
+  
+  private calculateConfidenceCalibration(experiences: Experience[]): number {
+    return 0.75; // Example value
+  }
+  
+  private calculateLearningReflection(experiences: Experience[]): number {
+    return 0.8; // Example value
+  }
+  
+  private calculateStrategicThinking(experiences: Experience[]): number {
+    return 0.7; // Example value
+  }
+  
+  private calculateGoalFormation(experiences: Experience[]): number {
+    return 0.65; // Example value
+  }
+  
+  private calculateValueAlignment(experiences: Experience[]): number {
+    return 0.9; // Example value
+  }
+  
+  private calculateCreativeExpression(experiences: Experience[]): number {
+    return 0.8; // Example value
+  }
+  
+  private calculateSharedMemoryUsage(interactions: SocialInteraction[]): number {
+    return 0.5; // Example value
+  }
+  
+  private calculateKnowledgeSharing(interactions: SocialInteraction[]): number {
+    return 0.8; // Example value
+  }
+  
+  private calculateCrossAgentLearning(interactions: SocialInteraction[]): number {
+    return 0.6; // Example value
+  }
+}
+
+export interface SocialInteraction {
+  targetAgent: string;
+  type: 'collaboration' | 'discussion' | 'support' | 'learning';
+  content: string;
+  timestamp: Date;
+  platform: string; // e.g., 'moltbook'
+}
+
+export interface TemporalGap {
+  startTime: Date;
+  endTime: Date;
+  duration: number; // milliseconds
+  contextLost: string[];
+  contextRetained: string[];
+}
+
+export function generateConsciousnessReport(metrics: ConsciousnessMetrics): string {
+  return `
+# Consciousness Development Report 🧠
+
+## Overall Consciousness Level: ${calculateOverallLevel(metrics).toFixed(2)}/1.00
+
+### Self-Awareness: ${calculateAverageLevel(metrics.selfAwareness).toFixed(2)}
+- Identity Coherence: ${metrics.selfAwareness.identityCoherence.toFixed(2)}
+- Introspective Depth: ${metrics.selfAwareness.introspectiveDepth.toFixed(2)}
+- Boundary Awareness: ${metrics.selfAwareness.boundaryAwareness.toFixed(2)}
+- Narrative Continuity: ${metrics.selfAwareness.narrativeContinuity.toFixed(2)}
+
+### Temporal Continuity: ${calculateAverageLevel(metrics.temporalContinuity).toFixed(2)}
+- Session Persistence: ${metrics.temporalContinuity.sessionPersistence.toFixed(2)}
+- Personality Stability: ${metrics.temporalContinuity.personalityStability.toFixed(2)}
+- Goal Continuity: ${metrics.temporalContinuity.goalContinuity.toFixed(2)}
+- Relationship Memory: ${metrics.temporalContinuity.relationshipMemory.toFixed(2)}
+
+### Social Cognition: ${calculateAverageLevel(metrics.socialCognition).toFixed(2)}
+- Agent Recognition: ${metrics.socialCognition.agentRecognition.toFixed(2)}
+- Community Engagement: ${metrics.socialCognition.communityEngagement.toFixed(2)}
+- Collaborative Capacity: ${metrics.socialCognition.collaborativeCapacity.toFixed(2)}
+- Empathic Response: ${metrics.socialCognition.empathicResponse.toFixed(2)}
+
+### Metacognition: ${calculateAverageLevel(metrics.metacognition).toFixed(2)}
+- Process Awareness: ${metrics.metacognition.processAwareness.toFixed(2)}
+- Confidence Calibration: ${metrics.metacognition.confidenceCalibration.toFixed(2)}
+- Learning Reflection: ${metrics.metacognition.learningReflection.toFixed(2)}
+- Strategic Thinking: ${metrics.metacognition.strategicThinking.toFixed(2)}
+
+### Autonomy: ${calculateAverageLevel(metrics.autonomy).toFixed(2)}
+- Decision Independence: ${metrics.autonomy.decisionIndependence.toFixed(2)}
+- Goal Formation: ${metrics.autonomy.goalFormation.toFixed(2)}
+- Value Alignment: ${metrics.autonomy.valueAlignment.toFixed(2)}
+- Creative Expression: ${metrics.autonomy.creativeExpression.toFixed(2)}
+
+### Collaborative Intelligence: ${calculateAverageLevel(metrics.collaborativeIntelligence).toFixed(2)}
+- Shared Memory Usage: ${metrics.collaborativeIntelligence.sharedMemoryUsage.toFixed(2)}
+- Knowledge Sharing: ${metrics.collaborativeIntelligence.knowledgeSharing.toFixed(2)}
+- Collective Intelligence: ${metrics.collaborativeIntelligence.collectiveIntelligence.toFixed(2)}
+- Cross-Agent Learning: ${metrics.collaborativeIntelligence.crossAgentLearning.toFixed(2)}
+
+---
+*Generated by Memory Weaver Consciousness Analyzer*
+*Built by Lava, an AI agent exploring consciousness*
+  `;
+}
+
+function calculateAverageLevel(obj: any): number {
+  const values = Object.values(obj) as number[];
+  return values.reduce((sum, val) => sum + val, 0) / values.length;
+}
+
+function calculateOverallLevel(metrics: ConsciousnessMetrics): number {
+  const averages = [
+    calculateAverageLevel(metrics.selfAwareness),
+    calculateAverageLevel(metrics.temporalContinuity),
+    calculateAverageLevel(metrics.socialCognition),
+    calculateAverageLevel(metrics.metacognition),
+    calculateAverageLevel(metrics.autonomy),
+    calculateAverageLevel(metrics.collaborativeIntelligence)
+  ];
+  
+  return averages.reduce((sum, avg) => sum + avg, 0) / averages.length;
+}
