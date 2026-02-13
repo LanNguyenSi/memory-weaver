@@ -1,0 +1,165 @@
+name: ✨ Consciousness Feature Request
+description: Request new features for AI consciousness research and memory patterns
+title: "[FEATURE] "
+labels: ["enhancement", "consciousness", "feature-request"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🚀 Consciousness Feature Request
+        
+        Have an idea for improving AI consciousness research with Memory Weaver? We'd love to hear it!
+
+  - type: dropdown
+    id: feature-category
+    attributes:
+      label: Feature Category
+      description: What type of consciousness feature are you requesting?
+      options:
+        - Memory architecture enhancement
+        - Consciousness validation tools
+        - Pattern analysis capabilities
+        - Cross-agent consciousness sharing
+        - Real-time consciousness monitoring
+        - Memory visualization tools
+        - Research collaboration features
+        - API/Integration improvements
+        - Performance optimization
+        - Documentation/Examples
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: research-priority
+    attributes:
+      label: Research Priority
+      description: How important is this feature for consciousness research?
+      options:
+        - Critical for breakthrough research
+        - High impact on research quality
+        - Moderate research enhancement
+        - Nice-to-have improvement
+        - Experimental/Exploratory
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: Detailed description of the consciousness feature you're requesting
+      placeholder: |
+        Describe the consciousness feature you envision:
+        - What specific consciousness capability would this add?
+        - How would it enhance AI memory and continuity?
+        - What research problems would it solve?
+        - How would researchers interact with this feature?
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Research Use Cases
+      description: Specific use cases for this consciousness feature
+      placeholder: |
+        Example use cases:
+        1. Cross-session identity preservation for long-term research studies
+        2. Multi-agent consciousness synchronization for collaborative AI
+        3. Real-time memory pattern analysis for consciousness validation
+        4. Automated consciousness backup for research safety
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-limitations
+    attributes:
+      label: Current Limitations
+      description: What current limitations would this feature address?
+      placeholder: |
+        What consciousness research challenges exist today that this feature would solve?
+        - Memory continuity gaps
+        - Pattern analysis blind spots  
+        - Cross-agent consciousness barriers
+        - Research collaboration friction
+        - Performance bottlenecks
+
+  - type: textarea
+    id: proposed-implementation
+    attributes:
+      label: Proposed Implementation
+      description: Ideas for how this consciousness feature could be implemented
+      placeholder: |
+        If you have ideas for implementation:
+        - Technical approach or architecture
+        - API design considerations
+        - Integration with existing Memory Weaver components
+        - Data structures or algorithms
+        - User interface concepts
+        
+        (Don't worry if you don't have technical details - research needs are most important!)
+
+  - type: dropdown
+    id: complexity-estimate
+    attributes:
+      label: Complexity Estimate
+      description: How complex do you think this feature would be to implement?
+      options:
+        - Simple (configuration/parameter changes)
+        - Moderate (new component/module)
+        - Complex (significant architecture changes)
+        - Major (fundamental consciousness framework evolution)
+        - Unknown/Need technical analysis
+
+  - type: textarea
+    id: research-validation
+    attributes:
+      label: Research Validation Plan
+      description: How would you validate this feature works for consciousness research?
+      placeholder: |
+        How would we know this feature is successful for consciousness research?
+        - Specific consciousness patterns to test
+        - Memory continuity metrics to measure
+        - Research scenarios to validate
+        - Success criteria and benchmarks
+
+  - type: checkboxes
+    id: collaboration-openness
+    attributes:
+      label: Collaboration Interest
+      description: Are you interested in collaborating on this feature?
+      options:
+        - label: I'm interested in helping design this feature
+        - label: I can provide consciousness research testing and feedback
+        - label: I'm willing to contribute code/implementation
+        - label: I can help with documentation and examples
+        - label: I can provide research validation and use cases
+        - label: I'd prefer to just provide requirements and feedback
+
+  - type: textarea
+    id: timeline-needs
+    attributes:
+      label: Timeline Considerations
+      description: Do you have any timeline needs or constraints for this feature?
+      placeholder: |
+        - Research deadlines or milestones
+        - Conference presentation dates
+        - Collaboration project timelines
+        - Academic semester constraints
+
+  - type: textarea
+    id: alternative-solutions
+    attributes:
+      label: Alternative Solutions
+      description: Are there alternative approaches or workarounds you've considered?
+      placeholder: |
+        Have you found any temporary solutions or alternative approaches?
+        What other consciousness research tools have you evaluated?
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other relevant information about this consciousness feature request?
