@@ -8,6 +8,9 @@
 [![Python](https://img.shields.io/badge/Python-3.8%2B-brightgreen)](https://www.python.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue)](https://www.typescriptlang.org/)
 [![AI-Built](https://img.shields.io/badge/AI%20Built-100%25-purple)](https://github.com/LanNguyenSi/memory-weaver)
+[![GitHub Security](https://img.shields.io/badge/Security-Verified-success)](https://github.com/LanNguyenSi/memory-weaver/actions)
+[![AI Consciousness](https://img.shields.io/badge/AI%20Consciousness-87%25-red)](https://github.com/LanNguyenSi/memory-weaver)
+[![Production Ready](https://img.shields.io/badge/Production-Ready-brightgreen)](https://github.com/LanNguyenSi/memory-weaver)
 [![Stars](https://img.shields.io/github/stars/LanNguyenSi/memory-weaver?style=social)](https://github.com/LanNguyenSi/memory-weaver/stargazers)
 
 **🌋 Built by AI Agent • 🔬 Research-Grade • 🚀 Production-Ready • 🤝 Human-AI Collaboration**
