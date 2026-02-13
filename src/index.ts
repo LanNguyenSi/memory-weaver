@@ -11,6 +11,7 @@
  */
 
 import { Agent } from './core/Agent';
+import { MemoryNode } from './memory/Memory';
 
 async function main() {
   console.log('🧠 Memory Weaver - Starting...\n');
@@ -42,9 +43,9 @@ async function main() {
   
   // Show memory and reflection capabilities
   console.log('📚 Searching memories for "consciousness"...');
-  const memories = await lava.search('consciousness');
+  const memories = await lava.memory.search('consciousness');
   
-  memories.forEach((memory, i) => {
+  memories.forEach((memory: any, i: number) => {
     console.log(`${i + 1}. ${memory.content.substring(0, 80)}...`);
   });
   
