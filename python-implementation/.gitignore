@@ -1,0 +1,29 @@
+# Personal Data - DO NOT COMMIT
+logs/
+analysis/
+personal_*/
+*_personal.*
+
+# Environment
+__pycache__/
+*.pyc
+*.pyo
+.env
+*.env
+
+# Config
+config.json
+credentials.json
+
+# Test Output
+test_output/
+debug_logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
